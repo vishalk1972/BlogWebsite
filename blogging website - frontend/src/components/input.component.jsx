@@ -1,4 +1,4 @@
-const InputBox=({name,type,id,value,placeholder})=>{
+const InputBox=({name,type,id1,value,placeholder})=>{
     retrun (
         <div className="relative w-[100%] mb-4">
             <input
@@ -6,7 +6,7 @@ const InputBox=({name,type,id,value,placeholder})=>{
                 type={type}
                 value={value}
                 placeholder={placeholder}
-                id={id}
+                id={id1}
             />
 
         </div>
