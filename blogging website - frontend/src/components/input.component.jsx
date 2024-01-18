@@ -6,6 +6,7 @@ const InputBox=({name,type,id,value,placeholder})=>{
                 type={type}
                 value={value}
                 placeholder={placeholder}
+                id={id}
             />
 
         </div>
