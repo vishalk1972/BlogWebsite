@@ -22,6 +22,3 @@ This website features include -
 13. Also user can change login password from settings.
 14. Its mobile responsive with modern design + fade in animation on pages.
 And much more. -->
-vishalpersonal4u
-SYy43HFgZqzDIUxW
-mongodb+srv://vishalpersonal4u:SYy43HFgZqzDIUxW@cluster0.qqfabko.mongodb.net/?retryWrites=true&w=majority
