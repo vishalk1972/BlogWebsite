@@ -2,11 +2,72 @@ import AnimationWrapper from "../common/page-animation"
 import InputBox from "../components/input.component"
 import googleIcon from "../imgs/google.png"
 import {Link} from "react-router-dom"
+import {Toaster,toast} from "react-hot-toast"
+import {emailRegex,passwordRegex} from "../regex.js"
+import axios from "axios"
+
+
 const UserAuthForm=({type})=>{
+    
+    let serverRroute = type==="sign-in" ? "/signin" : "/signup"
+    const userAuthThroughServer=(serverRroute,formData)=>{
+        axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRroute,formData)
+        .then((data)=>{
+            if(type==="sign-up")
+            {
+                return toast.success("Succesfully Registered") 
+            }
+            else{
+                return toast.success("Logging In......") 
+            }
+            
+        })
+        .catch((err)=>{
+            //  console.log("-->>>> ",err.request.response);
+             let data=JSON.parse(err.request.response)
+             return toast.error(data.error)
+        })
+    }
+
+
+    /////////////
+    const handleSubmit=(e)=>{
+        e.preventDefault();
+        let form=new FormData(formElement)
+        console.log(form);
+        let formData={}
+        for(let [key,value] of form.entries())
+        {
+            formData[key]=value
+        }
+        let {fullname,email,password}=formData
+        if(type==="sign-up")
+        {
+            if(fullname.length<3)
+            {
+                return toast.error("Fullname must be of atleast length 3")
+            }
+        }
+        if(!email.length)
+        {
+            return toast.error("Enter Email")
+        }
+        if(!emailRegex.test(email)) // regex pattern checking
+        {
+            return toast.error("Email is invalid")
+        }
+        if(!passwordRegex.test(password))
+        {
+            return toast.error("Password should be 6 to 20 charcters long with a neumeric, 1 lowercase and 1 uppercase letter")
+        }
+        userAuthThroughServer(serverRroute,formData);
+    }
+    /////////////
     
     return <AnimationWrapper keyId={type}>
         <section className="h-cover flex items-center justify-center">
-            <form className="w-[80%] max-w-[400px]">
+            <Toaster/>
+            <form id="formElement" className="w-[80%] max-w-[400px]">
                     <h1 className="text-4xl font-gelasio capitalize text-center mb-24">{type==="sign-in" ? "Welcome Back" : "Join Us Today"}</h1>
                     {
                         type==="sign-up" ?
@@ -34,6 +95,7 @@ const UserAuthForm=({type})=>{
 
                         <button className="btn-dark center mt-14"
                         type="submit"
+                         onClick={(e)=>handleSubmit(e)}
                         >
                             {type.replace("-"," ")}
                         </button>
