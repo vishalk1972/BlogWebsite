@@ -114,6 +114,7 @@ server.post("/signin",(req,res)=>{
     let {email,password}=req.body
     User.findOne({"personal_info.email":email})
     .then((user)=>{
+        console.log("ok")
         if(!user)
         {
             return res.status(403).json({"error":"Email Not Found"})
@@ -131,7 +132,7 @@ server.post("/signin",(req,res)=>{
         })
     })
     .catch((err)=>{
-        return res.status(500).json({"error":"err.message"})
+        return res.status(500).json({"error":err.message})
     })
 })
 

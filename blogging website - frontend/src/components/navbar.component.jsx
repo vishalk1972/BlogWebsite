@@ -1,8 +1,16 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import logo from "../imgs/logo.png"
 import {Link, Outlet} from "react-router-dom"
+import { userContext } from "../App"
 const Navbar=()=>{
     const [searchBoxVisibility,setSearchBoxVisibility]=useState(false)
+
+    // const {userAuth,setUserAuth}=useContext(userContext);
+    // const {data}=userAuth;
+    // const access_token=data?.access_token
+    // const profile_img=data?.profile_img
+ 
+    // console.log(data , "in nav")
     return <>
     <nav className="navbar">
         <Link to='/' className="flex-none w-10">
@@ -30,8 +38,7 @@ const Navbar=()=>{
                 <i class="fi fi-rr-file-edit"></i>
                 <p>Write</p>
             </Link>
-
-
+           
             <Link className="btn-dark py-2" to='/signin'>
                 sign in
             </Link>

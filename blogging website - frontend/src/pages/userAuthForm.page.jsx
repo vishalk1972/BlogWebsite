@@ -1,29 +1,31 @@
 import AnimationWrapper from "../common/page-animation"
 import InputBox from "../components/input.component"
 import googleIcon from "../imgs/google.png"
-import {Link} from "react-router-dom"
+import {Link, Navigate} from "react-router-dom"
 import {Toaster,toast} from "react-hot-toast"
 import {emailRegex,passwordRegex} from "../regex.js"
 import axios from "axios"
+import { storeInSession } from "../common/session"
+import { useContext } from "react"
+import { userContext } from "../App"
 
 
 const UserAuthForm=({type})=>{
     
+
+    let {userAuth,setuserAuth}=useContext(userContext);
+    let {data}=userAuth;
+    console.log(data.access_token);
+
     let serverRroute = type==="sign-in" ? "/signin" : "/signup"
     const userAuthThroughServer=(serverRroute,formData)=>{
         axios.post(import.meta.env.VITE_SERVER_DOMAIN + serverRroute,formData)
         .then((data)=>{
-            if(type==="sign-up")
-            {
-                return toast.success("Succesfully Registered") 
-            }
-            else{
-                return toast.success("Logging In......") 
-            }
-            
+            storeInSession("user",JSON.stringify(data));
+            setuserAuth(data);
+            toast.success("Successs")
         })
         .catch((err)=>{
-            //  console.log("-->>>> ",err.request.response);
              let data=JSON.parse(err.request.response)
              return toast.error(data.error)
         })
@@ -34,13 +36,13 @@ const UserAuthForm=({type})=>{
     const handleSubmit=(e)=>{
         e.preventDefault();
         let form=new FormData(formElement)
-        console.log(form);
         let formData={}
         for(let [key,value] of form.entries())
         {
             formData[key]=value
         }
         let {fullname,email,password}=formData
+        console.log(fullname , "my name");
         if(type==="sign-up")
         {
             if(fullname.length<3)
@@ -63,22 +65,22 @@ const UserAuthForm=({type})=>{
         userAuthThroughServer(serverRroute,formData);
     }
     /////////////
-    
+    // data.access_token ? <Navigate to="/"/> :
     return <AnimationWrapper keyId={type}>
         <section className="h-cover flex items-center justify-center">
             <Toaster/>
             <form id="formElement" className="w-[80%] max-w-[400px]">
                     <h1 className="text-4xl font-gelasio capitalize text-center mb-24">{type==="sign-in" ? "Welcome Back" : "Join Us Today"}</h1>
-                    {
-                        type==="sign-up" ?
-                        <InputBox
-                            name="fullname"
-                            type="text"
-                            placeholder="Full Name"
-                            icon="fi-rr-user"
-                        />
-                        :""
-                    }
+                        {
+                            type==="sign-up" ?
+                            <InputBox
+                                name="fullname"
+                                type="text"
+                                placeholder="Full Name"
+                                icon="fi-rr-user"
+                            />
+                            :""
+                        }
 
                         <InputBox
                             name="email"

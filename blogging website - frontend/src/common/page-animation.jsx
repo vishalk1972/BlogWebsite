@@ -1,5 +1,5 @@
 import {AnimatePresence,motion} from "framer-motion"
-const AnimationWrapper=({children,keyId,initial={opacity:0},animate={opacity:1},transition={duration:0.5}})=>{
+const AnimationWrapper=({children,keyId,initial={opacity:0},animate={opacity:1},transition={duration:0.9}})=>{
     return <AnimatePresence>
         <motion.div
             key={keyId}
