@@ -11,9 +11,7 @@ const App = () => {
 
     useEffect(()=>{
         let userInSession=lookInSession("user");
-        // console.log(userInSession,"user bhetla bho session madhe")
         userInSession ? setuserAuth(JSON.parse(userInSession)) : setuserAuth({data:{access_token:null}})
-        console.log(userAuth ,"lad");
     },[])
 
     return (

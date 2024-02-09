@@ -1,18 +1,19 @@
 import AnimationWrapper from "../common/page-animation"
 import InputBox from "../components/input.component"
 import googleIcon from "../imgs/google.png"
-import {Link, Navigate} from "react-router-dom"
+import {Link,Navigate,useNavigate} from "react-router-dom"
 import {Toaster,toast} from "react-hot-toast"
 import {emailRegex,passwordRegex} from "../regex.js"
 import axios from "axios"
 import { storeInSession } from "../common/session"
 import { useContext } from "react"
 import { userContext } from "../App"
-
+import { authWithGoogle } from "../common/firebase"
+ 
 
 const UserAuthForm=({type})=>{
     
-
+    const navigate=useNavigate();
     let {userAuth,setuserAuth}=useContext(userContext);
     let {data}=userAuth;
     console.log(data.access_token);
@@ -23,7 +24,11 @@ const UserAuthForm=({type})=>{
         .then((data)=>{
             storeInSession("user",JSON.stringify(data));
             setuserAuth(data);
-            toast.success("Successs")
+            type==="sign-up" ? navigate('/signin') :""
+            setTimeout(()=>{
+                return toast.success("Successs")
+            },1000)
+           
         })
         .catch((err)=>{
              let data=JSON.parse(err.request.response)
@@ -31,6 +36,19 @@ const UserAuthForm=({type})=>{
         })
     }
 
+    const handleGoogleAuth=(e)=>{
+        e.preventDefault()
+        authWithGoogle().then((user)=>{
+            console.log(user.accessToken, "gandu")
+            let serverRroute="/google-auth"
+                let formData={
+                    access_token:user.accessToken
+                }
+                userAuthThroughServer(serverRroute,formData)
+            }
+        )
+        .catch(err=>{return toast.error("Error While Logging In With Google")})
+    }
 
     /////////////
     const handleSubmit=(e)=>{
@@ -65,8 +83,8 @@ const UserAuthForm=({type})=>{
         userAuthThroughServer(serverRroute,formData);
     }
     /////////////
-    // data.access_token ? <Navigate to="/"/> :
-    return <AnimationWrapper keyId={type}>
+    return data.access_token ? <Navigate to="/"/> :
+     <AnimationWrapper keyId={type}>
         <section className="h-cover flex items-center justify-center">
             <Toaster/>
             <form id="formElement" className="w-[80%] max-w-[400px]">
@@ -110,12 +128,12 @@ const UserAuthForm=({type})=>{
                         </div>
 
                     
-                        <button className="btn-dark flex items-center justify-center gap-4 w-[90%] center">
+                        <button onClick={(e)=>handleGoogleAuth(e)} className="btn-dark flex items-center justify-center gap-4 w-[90%] center">
                             <img src={googleIcon} className="w-5 "></img>
                             continue with google
                         </button>
 
-
+ 
                         {
                             type==="sign-in" ?
                             <p className="mt-6 text-dark-grey text-xl text-center">
