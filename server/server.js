@@ -5,6 +5,8 @@ import "dotenv/config"
 import {emailRegex,passwordRegex} from "../blogging website - frontend/src/regex.js"
 import { nanoid } from "nanoid"
 import jwt from "jsonwebtoken"
+import pkg from 'jsonwebtoken';
+const { sign } = pkg;
 import cors from "cors"
 import admin from "firebase-admin"
 import serivceAccountKey from "./react-js-blog-website-7a163-firebase-adminsdk-afq7m-b398ba541c.json" assert { type:"json"}
@@ -27,7 +29,7 @@ admin.initializeApp({
 server.use(express.json())
 server.use(cors())
 
-
+console.log(process.env.DB_LOCATION,"url---------")
 //DB CONNECTION
 mongoose.connect(process.env.DB_LOCATION,
 {
@@ -141,6 +143,7 @@ server.post("/signin",(req,res)=>{
             {
                 return res.status(403).json({"error":"Invalid Password"})
             }
+            console.log("Done")
             return res.status(200).json(formatDatatosend(user))
         })
     })
